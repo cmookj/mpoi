@@ -4,6 +4,8 @@ This library helps writing a program which uses OpenCL for parallel computation.
 
 ## How to Build
 
+This repository depends on Bazel.
+
 Build MPOI library:
 ```shell
 bazel build --compilation_mode=opt --cxxopt=-std=c++17 //core:mpoi
@@ -13,6 +15,8 @@ Build example program:
 ```shell
 bazel build --compilation_mode=opt --cxxopt=-std=c++20 //examples:ex1
 ```
+
+Note: the example program requires C++20 because it uses `std::format`.
 
 ## Example Program
 
