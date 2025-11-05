@@ -52,10 +52,12 @@ bazel build --compilation_mode=opt --cxxopt=-std=c++20 //examples:ex2
 ```
 
 Original image:
+
 ![Image of Lenna Forsén](https://upload.wikimedia.org/wikipedia/en/7/7d/Lenna_%28test_image%29.png)
 
 Grayscale conversion:
-![Grayscale image of Lenna](examples/lenna.ppm_gray.ppm)
+
+![Grayscale image of Lenna](examples/lenna_gray.ppm)
 
 Result of Gaussian blur (from CPU and GPU):
-![Gaussian blur on CPU](examples/lenna.ppm_gray_conv_s.ppm) ![Gaussian blur on GPU](examples/lenna.ppm_gray_conv_p.ppm)
+![Gaussian blur on CPU](examples/lenna_gray_conv_s.ppm) ![Gaussian blur on GPU](examples/lenna_gray_conv_p.ppm)
