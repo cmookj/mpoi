@@ -21,6 +21,7 @@ A silly example only to show how to use the MPOI library.
 
 ```shell
 bazel build --compilation_mode=opt --cxxopt=-std=c++20 //examples:ex1
+bazel-bin/examples/ex1
 ```
 
 The example program compares the computational performance between CPU and GPU.
@@ -49,15 +50,17 @@ The output of the program on M4 Pro:
 
 ```shell
 bazel build --compilation_mode=opt --cxxopt=-std=c++20 //examples:ex2
+bazel-bin/examples/ex2
 ```
 
-Original image:
-
-![Image of Lenna Forsén](https://upload.wikimedia.org/wikipedia/en/7/7d/Lenna_%28test_image%29.png)
-
-Grayscale conversion:
-
-![Grayscale image of Lenna](examples/lenna_gray.ppm)
-
-Result of Gaussian blur (from CPU and GPU):
-![Gaussian blur on CPU](examples/lenna_gray_conv_s.ppm) ![Gaussian blur on GPU](examples/lenna_gray_conv_p.ppm)
+Output of the program on M4 Pro:
+```shell
+Running time for serial computation = 24 msec
+1 OpenCL platform(s) found.
+Platform # 0
+1 GPU device(s) found for platform 0x7fff0000
+Device vendor ID: 16940800
+Device has 20 compute units.
+Local item size = 128
+Running time for parallel computation = 3 msec
+```
