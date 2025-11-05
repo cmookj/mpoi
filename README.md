@@ -11,14 +11,17 @@ Build MPOI library:
 bazel build --compilation_mode=opt --cxxopt=-std=c++17 //core:mpoi
 ```
 
-Build example program:
+## Example Programs
+
+Note: the example programs require C++20 because it uses `std::format`.
+
+### Example 1
+
+A silly example only to show how to use the MPOI library.
+
 ```shell
 bazel build --compilation_mode=opt --cxxopt=-std=c++20 //examples:ex1
 ```
-
-Note: the example program requires C++20 because it uses `std::format`.
-
-## Example Program
 
 The example program compares the computational performance between CPU and GPU.
 The output of the program on M4 Pro:
@@ -39,3 +42,20 @@ The output of the program on M4 Pro:
 --------------------------------------------------------------------------------
         67.5               445.3             0.1517956
 ```
+
+### Example 2
+
+2D image processing example which shows a $9\times9$ Gaussian blur (convolution).
+
+```shell
+bazel build --compilation_mode=opt --cxxopt=-std=c++20 //examples:ex2
+```
+
+Original image:
+![Image of Lenna Forsén](https://upload.wikimedia.org/wikipedia/en/7/7d/Lenna_%28test_image%29.png)
+
+Grayscale conversion:
+![Grayscale image of Lenna](examples/lenna.ppm_gray.ppm)
+
+Result of Gaussian blur (from CPU and GPU):
+![Gaussian blur on CPU](examples/lenna.ppm_gray_conv_s.ppm) ![Gaussian blur on GPU](examples/lenna.ppm_gray_conv_p.ppm)
