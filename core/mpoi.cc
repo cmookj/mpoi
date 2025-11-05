@@ -302,7 +302,7 @@ mpoi::set_kernel_argument (
     const std::size_t id,
     const std::size_t order,
     const std::size_t size,
-    void*             mem
+    const void*       mem
 ) {
     if (_kernels[id] != NULL) {
         cl_int err = clSetKernelArg (_kernels[id], static_cast<cl_uint> (order), size, mem);
@@ -317,8 +317,8 @@ mpoi::set_kernel_argument (
 void
 mpoi::enqueue_data_parallel_kernel (
     const std::size_t id,
-    std::size_t       num_global_items,
-    std::size_t       num_local_items
+    std::size_t       num_local_items,
+    std::size_t       num_global_items
 ) {
     if (_kernels[id] != NULL) {
         for (; num_local_items != 1; num_local_items--) {
@@ -326,7 +326,32 @@ mpoi::enqueue_data_parallel_kernel (
         }
         std::cout << "Local item size = " << num_local_items << std::endl;
         cl_int err = clEnqueueNDRangeKernel (
-            _cmd_queue, _kernels[id], 1, NULL, &num_global_items, &num_local_items, 0, NULL, NULL
+            _cmd_queue, _kernels[id], 1, NULL, &num_global_items, NULL, 0, NULL, NULL
+        );
+        if (err != CL_SUCCESS) {
+            std::cerr << "Error in enqueuing nd range kernel.\n";
+            return;
+        }
+    }
+}
+
+void
+mpoi::enqueue_data_parallel_kernel (
+    const std::size_t id,
+    std::size_t       num_local_items,
+    std::size_t       num_global_items_x,
+    std::size_t       num_global_items_y
+) {
+    if (_kernels[id] != NULL) {
+        const std::size_t num_global_items = num_global_items_x * num_global_items_y;
+        std::size_t       global_size[2]   = {num_global_items_x, num_global_items_y};
+
+        for (; num_local_items != 1; num_local_items--) {
+            if (num_global_items % num_local_items == 0) break;
+        }
+        std::cout << "Local item size = " << num_local_items << std::endl;
+        cl_int err = clEnqueueNDRangeKernel (
+            _cmd_queue, _kernels[id], 2, NULL, global_size, NULL, 0, NULL, NULL
         );
         if (err != CL_SUCCESS) {
             std::cerr << "Error in enqueuing nd range kernel.\n";

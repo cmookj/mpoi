@@ -65,10 +65,13 @@ class mpoi {
     set_kernel_argument (const std::size_t, const std::size_t, const std::size_t);
 
     void
-    set_kernel_argument (const std::size_t, const std::size_t, const std::size_t, void*);
+    set_kernel_argument (const std::size_t, const std::size_t, const std::size_t, const void*);
 
     void
     enqueue_data_parallel_kernel (const std::size_t, std::size_t, std::size_t);
+
+    void
+    enqueue_data_parallel_kernel (const std::size_t, std::size_t, std::size_t, std::size_t);
 
   private:
     void
