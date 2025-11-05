@@ -13,3 +13,16 @@ cc_binary(
     }),
     linkopts = ["-framework", "OpenCL"],
 )
+
+cc_binary(
+    name = "ex2",
+    srcs = ["ex2.cc"],
+    deps = [
+        "//core:mpoi",
+    ],
+    copts = select({
+        "@bazel_tools//src/conditions:windows": ["/std:c++20"],
+        "//conditions:default": ["-std=c++20"],
+    }),
+    linkopts = ["-framework", "OpenCL"],
+)
