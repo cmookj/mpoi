@@ -1,7 +1,7 @@
-kernel void vec_calc (global const float* a,
-                      global const float* b,
-                      global float* result
-                      ) {
+__kernel void vec_calc (global const float* a,
+                        global const float* b,
+                        global float* result
+                        ) {
     int id = get_global_id(0);
 
     float term = sin(a[id])*cos(b[id]);

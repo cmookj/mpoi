@@ -204,7 +204,7 @@ convolution_parallel (const std::string& filename) {
     Image gray = rgb_to_gray (src);
 
     mpoi pc ("./examples/kernel2.cl");
-    pc.display_platform_info();
+    // pc.display_platform_info();
 
     std::size_t kernel_id = pc.create_kernel ("gaussian_blur");
 
