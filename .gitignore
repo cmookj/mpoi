@@ -5,3 +5,4 @@ bazel-out
 bazel-testlogs
 bazel-*
 compile_commands.json
+*.pgm
