@@ -3,12 +3,11 @@
 #include <chrono>
 #include <cmath>
 #include <cstdint>
+#include <filesystem>
 #include <format>
 #include <fstream>
 #include <iostream>
-#include <memory>
 #include <ranges>
-#include <sstream>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -52,12 +51,12 @@ read_ppm_binary (const std::string& filename) {
 }
 
 void
-write_ppm_binary (const std::string& filename, const Image& img) {
+write_pgm_binary (const std::string& filename, const Image& img) {
     std::ofstream file (filename, std::ios::binary);
     if (!file) throw std::runtime_error ("Cannot open file: " + filename);
 
     // Header
-    file << "P6\n";
+    file << "P5\n";
     file << std::to_string (img.width) << " " << std::to_string (img.height) << "\n" << "255\n";
 
     // Body
@@ -77,16 +76,6 @@ rgb_to_gray (const Image& img) {
     }
 
     return Image{img.width, img.height, 1, std::move (pixels)};
-}
-
-Image
-gray_to_rgb (const Image& img) {
-    std::vector<uint8_t> pixels (img.width * img.height * 3);
-    for (std::size_t i : std::views::iota (0, img.width * img.height)) {
-        pixels[3 * i] = pixels[3 * i + 1] = pixels[3 * i + 2] = img.pixels[i];
-    }
-
-    return Image{img.width, img.height, 3, std::move (pixels)};
 }
 
 //// Gaussian kernel
@@ -146,13 +135,15 @@ image_convoluted (const Image& img) {
 }
 
 int
-convolution_serial (const std::string& filename, const bool save_gray = false) {
-    Image src  = read_ppm_binary ("examples/lenna.ppm");
+convolution_serial (const std::filesystem::path filepath, const bool save_gray = false) {
+    Image src  = read_ppm_binary (filepath.string());
     Image gray = rgb_to_gray (src);
 
     if (save_gray) {
-        Image gray_3ch = gray_to_rgb (gray);
-        write_ppm_binary (filename + "_gray.ppm", gray_3ch);
+        write_pgm_binary (
+            filepath.parent_path() / std::filesystem::path{filepath.stem().string() + "_gray.pgm"},
+            gray
+        );
     }
 
     // Convolution
@@ -162,8 +153,10 @@ convolution_serial (const std::string& filename, const bool save_gray = false) {
     auto  time_elapsed_msec =
         static_cast<int> (duration_cast<std::chrono::milliseconds> (t1 - t0).count());
 
-    Image rgb = gray_to_rgb (convoluted);
-    write_ppm_binary (filename + "_gray_conv_s.ppm", rgb);
+    write_pgm_binary (
+        filepath.parent_path() / std::filesystem::path{filepath.stem().string() + "_blurred_s.pgm"},
+        convoluted
+    );
 
     return time_elapsed_msec;
 }
@@ -199,12 +192,11 @@ image_convoluted_parallel (const Image& img, mpoi& pc, const std::size_t kernel_
 }
 
 int
-convolution_parallel (const std::string& filename) {
-    Image src  = read_ppm_binary ("examples/lenna.ppm");
+convolution_parallel (const std::filesystem::path filepath) {
+    Image src  = read_ppm_binary (filepath.string());
     Image gray = rgb_to_gray (src);
 
     mpoi pc ("./examples/kernel2.cl");
-    // pc.display_platform_info();
 
     std::size_t kernel_id = pc.create_kernel ("gaussian_blur");
 
@@ -215,8 +207,10 @@ convolution_parallel (const std::string& filename) {
     auto  time_elapsed_msec =
         static_cast<int> (duration_cast<std::chrono::milliseconds> (t1 - t0).count());
 
-    Image rgb = gray_to_rgb (convoluted);
-    write_ppm_binary (filename + "_gray_conv_p.ppm", rgb);
+    write_pgm_binary (
+        filepath.parent_path() / std::filesystem::path{filepath.stem().string() + "_blurred_p.pgm"},
+        convoluted
+    );
 
     return time_elapsed_msec;
 }
