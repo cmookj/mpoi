@@ -7,7 +7,6 @@ cc_library(
     visibility = ["//visibility:public"],
     linkopts = ["-framework", "OpenCL"],
     copts = select({
-        "@bazel_tools//src/conditions:windows": ["/std:c++17"],
-        "//conditions:default": ["-framework", "OpenCL", "-std=c++17"],
+        "//conditions:default": ["-framework", "OpenCL"],
     }),
 )
