@@ -4,11 +4,16 @@ This library helps writing a program which uses OpenCL for parallel computation.
 
 ## How to Build
 
-This repository depends on Bazel.
-
-Build MPOI library:
+Debug build:
 ```shell
-bazel build --compilation_mode=opt --cxxopt=-std=c++17 //core:mpoi
+cmake -S . -B build -D CMAKE_BUILD_TYPE=Debug
+cmake --build build -j
+```
+
+Release build:
+```shell
+cmake -S . -B build -D CMAKE_BUILD_TYPE=Release
+cmake --build build -j
 ```
 
 ## Example Programs
@@ -18,12 +23,6 @@ Note: the example programs require C++20 because it uses `std::format`.
 ### Example 1
 
 A silly example only to show how to use the MPOI library.
-
-```shell
-bazel build --compilation_mode=opt --cxxopt=-std=c++20 //examples:ex1
-bazel-bin/examples/ex1
-```
-
 The example program compares the computational performance between CPU and GPU.
 The output of the program on M4 Pro:
 ```shell
@@ -47,11 +46,6 @@ The output of the program on M4 Pro:
 ### Example 2
 
 2D image processing example which shows a $9\times9$ Gaussian blur (convolution).
-
-```shell
-bazel build --compilation_mode=opt --cxxopt=-std=c++20 //examples:ex2
-bazel-bin/examples/ex2
-```
 
 Output of the program on M4 Pro:
 ```shell
